@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE beans [
+    <!ELEMENT beans (bean*)>
+    <!ELEMENT bean (property*)>
+    <!ELEMENT property (#PCDATA)>
+
+    <!ATTLIST bean id ID #REQUIRED>
+    <!ATTLIST bean class CDATA #IMPLIED>
+    <!ATTLIST property name CDATA #IMPLIED>
+    <!ATTLIST property ref IDREF #IMPLIED>
+]>
+
+<beans>
+    <!-- DAO注册 -->
+    <bean id="userBasicDAO" class="com.guo.practice.dao.impl.UserBasicDAOImpl"/>
+    <bean id="topicDAO" class="com.guo.practice.dao.impl.TopicDAOImpl"/>
+    <bean id="hostReplyDAO" class="com.guo.practice.dao.impl.HostReplyDAOImpl"/>
+    <bean id="replyDAO" class="com.guo.practice.dao.impl.ReplyDAOImpl"/>
+
+
+
+    <!-- service 注册-->
+    <bean id="userBasicService" class="com.guo.practice.service.impl.UserBasicServiceImpl">
+        <property name="userBasicDAO" ref="userBasicDAO"/>
+    </bean>
+    <bean id="hostReplyService" class="com.guo.practice.service.impl.HostReplyServiceImpl">
+        <property name="hostReplyDAO" ref="hostReplyDAO" />
+    </bean>
+    <bean id="replyService" class="com.guo.practice.service.impl.ReplyServiceImpl">
+        <property name="replyDAO" ref="replyDAO"/>
+        <property name="hostReplyService" ref="hostReplyService"/>
+        <property name="userBasicService" ref="userBasicService"/>
+    </bean>
+    <bean id="topicService" class="com.guo.practice.service.impl.TopicServiceImpl">
+        <property name="topicDAO" ref="topicDAO"/>
+        <property name="replyService" ref="replyService"/>
+        <property name="userBasicService" ref="userBasicService"/>
+    </bean>
+
+
+    <!-- controller 注册-->
+    <bean id="user" class="com.guo.practice.controller.UserController">
+        <property name="userBasicService" ref="userBasicService"/>
+        <property name="topicService" ref="topicService"/>
+    </bean>
+    <bean id="page" class="com.guo.myssm.myspringmvc.PageController"/>
+    <bean id="topic" class="com.guo.practice.controller.TopicController">
+        <property name="topicService" ref="topicService"/>
+    </bean>
+    <bean id="reply" class="com.guo.practice.controller.ReplyController">
+        <property name="replyService" ref="replyService"/>
+    </bean>
+</beans>
